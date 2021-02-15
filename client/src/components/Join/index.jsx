@@ -9,7 +9,7 @@ const Join = () => {
     <React.Fragment>
       <div className="joinOuterContainer">
         <div className="joinInnerContainer">
-          <h1>Join</h1>
+          <h1 className="heading">Join</h1>
           <div>
             <input
               type="text"

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
+import InfoBar from "../InfoBar";
+import Input from "../Input";
+import Messages from "../Messages";
+
+import "./Chat.css";
 
 let socket;
 
@@ -8,6 +13,9 @@ const Chat = ({ location }) => {
   const ENDPOINT = "localhost:5000";
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
     socket = io(ENDPOINT);
@@ -21,7 +29,39 @@ const Chat = ({ location }) => {
       socket.off();
     };
   }, [ENDPOINT, location.search]);
-  return <div>Chat</div>;
+
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages([...messages, message]);
+    });
+  }, [messages]);
+
+  // function for sending messages
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+    if (messages) {
+      socket.emit("sendMessage", message, () => setMessage(""));
+    }
+  };
+
+  console.log(message, messages);
+
+  return (
+    <React.Fragment>
+      <div className="outerContainer">
+        <div className="container">
+          <InfoBar room={room} />
+          <Messages messages={messages} name={name} />
+          <Input
+            message={message}
+            setMessage={setMessage}
+            sendMessage={sendMessage}
+          />
+        </div>
+      </div>
+    </React.Fragment>
+  );
 };
 
 export default Chat;
