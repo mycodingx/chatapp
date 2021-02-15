@@ -21,6 +21,9 @@ const io = sockertio(server, {
 
 io.on("connection", (socket) => {
   console.log("We have a new socket connection..!!");
+  socket.on("join", ({ name, room }) => {
+    console.log(`${name} joined chat in ${room}`);
+  });
   socket.on("disconnect", () => {
     console.log("Connection off...!!");
   });
